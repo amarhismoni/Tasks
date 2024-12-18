@@ -1,9 +1,8 @@
-const model = require("../models/model");
-const user = model.Users;
+const { Users } = require("../models/model");
 
 exports.createUser = async (fullname, username, password) => {
     try {
-        const newUser = await user.create({
+        const newUser = await Users.create({
             fullname: fullname,
             username: username,
             password: password,

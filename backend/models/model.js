@@ -11,14 +11,15 @@ const Users = sequelize.define("users", {
         type: Sequelize.DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
+        autoIncrement: true
     },
-    fullName: {
+    fullname: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
     },
     username: {
         type: Sequelize.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     password: {
         type: Sequelize.DataTypes.INTEGER,
@@ -26,7 +27,7 @@ const Users = sequelize.define("users", {
     },
 });
 
-const tasks = sequelize.define("tasks", {
+const Tasks = sequelize.define("tasks", {
     id: {
         type: Sequelize.DataTypes.INTEGER,
         allowNull: false,
@@ -63,7 +64,7 @@ const Categories = sequelize.define("categories", {
     },
 });
 
-Categories.belongsToMany(tasks, { through: "categoryTasks" });
+Categories.belongsToMany(Tasks, { through: "categoryTasks" });
 
 (async () => {
     await sequelize.sync({ force: true });
@@ -71,4 +72,4 @@ Categories.belongsToMany(tasks, { through: "categoryTasks" });
 
 //User, Tasks, Categories, TasksCategory
 
-module.exports = Users
+module.exports = {Users, Tasks, Categories}
