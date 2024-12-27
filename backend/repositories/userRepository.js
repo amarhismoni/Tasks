@@ -13,3 +13,17 @@ exports.createUser = async (fullname, username, password) => {
         throw error;
     }
 };
+
+exports.findUser = async (username, password) => {
+    try {
+        const user = await Users.findAll({
+            where: {
+                username: username,
+                password: password
+            }
+        });
+        return user
+    } catch (error) {
+        console.log("Invalid Credentials")
+    }
+}

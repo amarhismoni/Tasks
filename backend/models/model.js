@@ -67,7 +67,7 @@ const Categories = sequelize.define("categories", {
 Categories.belongsToMany(Tasks, { through: "categoryTasks" });
 
 (async () => {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
 })();
 
 //User, Tasks, Categories, TasksCategory

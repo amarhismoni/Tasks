@@ -5,7 +5,7 @@ const cors = require('cors')
 
 app.use(
     cors({
-        origin: "http://localhost:3001",
+        origin: "http://localhost:3000",
         preflightContinue: true,
     })
 );
@@ -13,5 +13,5 @@ app.use(
 
 app.use('/auth', userController );
 
-app.listen(3000);
+app.listen(8585);
 

@@ -23,7 +23,7 @@ function Register() {
 
         let urlencoded = new URLSearchParams(formData).toString();
         console.log(urlencoded);
-        const response = await fetch("http://localhost:3000/auth/register", {
+        const response = await fetch("http://localhost:8585/auth/register", {
             method: "post",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
