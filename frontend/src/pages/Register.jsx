@@ -35,15 +35,15 @@ function Register() {
     return (
         <form onSubmit={handleSubmit}>
             <div>
-                <label htmlFor="fullname">Full Name:</label>
+                <label htmlFor="fullname">Full Name:</label> <br />
                 <input type="text" id="fullname" name="fullname" value={formData.fullname} onChange={handleChange} required />
             </div>
             <div>
-                <label htmlFor="username">Username:</label>
+                <label htmlFor="username">Username:</label> <br />
                 <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required />
             </div>
             <div>
-                <label htmlFor="password">Password:</label>
+                <label htmlFor="password">Password:</label> <br />
                 <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
             </div>
             <button type="submit">Submit</button>
