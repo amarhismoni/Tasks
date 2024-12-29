@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from './pages/Home'
+import { Navigate } from 'react-router'
+import Tasks from './pages/Tasks'
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -10,9 +11,9 @@ function App() {
         <div className="App">
             <BrowserRouter>
                 <Routes>
-                  <Route path="/" exact element={<Home />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/login" element={<Login />} />
+                    <Route path="/home" element={<Tasks />} />
+                    <Route path="/register" exact element={<Register />} />
+                    <Route path="/login" element={<Login />} />
                 </Routes>
             </BrowserRouter>
         </div>

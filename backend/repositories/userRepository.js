@@ -1,29 +1,37 @@
 const { Users } = require("../models/model");
 
-exports.createUser = async (fullname, username, password) => {
+exports.findUserByUsername = async (username) => {
     try {
-        const newUser = await Users.create({
-            fullname: fullname,
-            username: username,
-            password: password,
+        const user = await Users.findOne({
+            where: { username: username },
         });
-        return newUser;
+        return user;
     } catch (error) {
-        console.error("Error creating user:", error);
+        console.error("Error in findUserByUsername:", error);
         throw error;
     }
 };
 
-exports.findUser = async (username, password) => {
+exports.createUser = async (fullname, username, password) => {
     try {
-        const user = await Users.findAll({
+        const newUser = await Users.create({ fullname, username, password });
+        return newUser;
+    } catch (error) {
+        console.error("Error in createUser:", error);
+        throw error;
+    }
+};
+
+exports.findUserByUsername = async (username) => {
+    try {
+        const user = await Users.findOne({
             where: {
                 username: username,
-                password: password
-            }
+            },
         });
-        return user
+        return user || null; 
     } catch (error) {
-        console.log("Invalid Credentials")
+        console.error("Error finding user by username:", error);
+        throw error;
     }
-}
+};

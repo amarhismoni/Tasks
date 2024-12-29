@@ -1,7 +1,10 @@
 import React from "react";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -33,6 +36,9 @@ function Login() {
         const result = await response.json();
 
         localStorage.setItem("jwtToken", result.token);
+
+        navigate('/home');
+
     };
 
     return (
@@ -46,17 +52,13 @@ function Login() {
                 <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
             </div>
             <button type="submit">Submit</button>
+            <div className="change-page">
+                <Link to="/register" className="link">
+                    Register
+                </Link>
+            </div>
         </form>
     );
 }
 
 export default Login;
-// import React from 'react'
-
-// function Login() {
-//   return (
-//     <div>Login</div>
-//   )
-// }
-
-// export default Login

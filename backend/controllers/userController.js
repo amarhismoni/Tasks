@@ -1,48 +1,71 @@
-const Router = require("express").Router();
 const express = require("express");
+const Router = express.Router();
 const jwt = require("jsonwebtoken");
 const userRepository = require("../repositories/userRepository");
 
 const SECRET_KEY = "secret";
 
-Router.post("/register", express.urlencoded(), (req, res) => {
-    const fullname = req.body.fullname;
-    const username = req.body.username;
-    const password = req.body.password;
+// Register Route
+Router.post("/register", express.urlencoded({ extended: true }), async (req, res) => {
 
-    console.log(req.body);
+    const { fullname, username, password } = req.body;
 
-    const user = userRepository.createUser(fullname, username, password);
+    try {
+        const foundUser = await userRepository.findUserByUsername(username);
 
-    res.status(201).json({
-        success: true,
-        message: "User created successfully!",
-    });
+        if (foundUser) {
+            return res.status(409).json({
+                success: false,
+                message: "User-i eksiston, shtoni nje tjeter",
+            });
+        }
+
+        const user = await userRepository.createUser(fullname, username, password);
+
+        return res.status(201).json({
+            success: true,
+            message: "Useri u krijua me sukses!",
+        });
+    } catch (error) {
+        console.error("Gabim ne regjistrim:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Kemi nje gabim gjat regjistrimit.",
+        });
+    }
 });
 
-Router.post("/login", express.urlencoded(), (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
 
-    const user = userRepository.findUser(username, password);
+// Login Route
+Router.post("/login", express.urlencoded({ extended: true }), (req, res) => {
+    const { username, password } = req.body;
 
-    if (!user) {
-        res.status(401).json({
+    if (!username || !password) {
+        return res.status(400).json({
             success: false,
-            message: "Invalid Credentials",
+            message: "Username dhe passwordi duhet te vendosen.",
         });
-    } else {
-        const payload = {
-            id: user.id,
-            username: user.username,
-            password: user.password,
-        };
-        const token = jwt.sign(payload, SECRET_KEY, {
-            expiresIn: "1h",
-        });
-        res.json({ token });
-        console.log(token)
     }
+
+    const user = userRepository.findUserByUsername(username);
+    if (!user || user.password !== password) {
+        return res.status(401).json({
+            success: false,
+            message: "Kredenciale te gabuara.",
+        });
+    }
+
+    const payload = {
+        id: user.id,
+        username: user.username,
+    };
+
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
+    return res.json({
+        success: true,
+        message: "Keni hyr me sukses.",
+        token,
+    });
 });
 
 module.exports = Router;

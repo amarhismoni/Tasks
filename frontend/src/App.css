@@ -16,10 +16,6 @@ form {
   border-radius: 10px;
 }
 
-/* from div {
-  display: flex;
-  flex-direction: column;
-} */
 
 label{
   font-size: 15px;
@@ -42,4 +38,14 @@ button{
   border-radius: 5px;
   color: white;
   font-weight: 700;
+}
+
+.change-page{
+  text-align: center;
+}
+
+.link{
+  color: rgb(39, 39, 39);
+  text-decoration: none;
+  font-size: 13px;
 }

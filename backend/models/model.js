@@ -45,6 +45,13 @@ const Tasks = sequelize.define("tasks", {
         type: Sequelize.DataTypes.DATE,
         allowNull: false,
     },
+    userId: {
+        type: Sequelize.DataTypes.INTEGER,
+        allowNull: false,
+        reference: {
+
+        }
+    },
     isArchived: {
         type: Sequelize.DataTypes.BOOLEAN,
         allowNull: false,
@@ -65,6 +72,9 @@ const Categories = sequelize.define("categories", {
 });
 
 Categories.belongsToMany(Tasks, { through: "categoryTasks" });
+Users.hasMany(Tasks, {
+    foreignKey: 'userId'
+});
 
 (async () => {
     await sequelize.sync({ force: false });
