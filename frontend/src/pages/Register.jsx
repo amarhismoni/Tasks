@@ -6,9 +6,8 @@ function Register() {
         fullname: "",
         username: "",
         password: "",
+        email: "",
     });
-
-    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -37,6 +36,7 @@ function Register() {
                     fullname: "",
                     username: "",
                     password: "",
+                    email: "",
                 });
             } else {
                 alert(data.message || "Regjistrimi nuk u kry, Provoni prap");
@@ -44,52 +44,34 @@ function Register() {
                     fullname: "",
                     username: "",
                     password: "",
+                    email: "",
                 });
             }
         } catch (error) {
             console.error("Gabim gjate regjistrimit:", error);
             alert("Kemi nje gabim. Provoni prap me vone");
-            
         }
     };
-
 
     return (
         <form onSubmit={handleSubmit}>
             <div>
                 <label htmlFor="fullname">Full Name:</label> <br />
-                <input
-                    type="text"
-                    id="fullname"
-                    name="fullname"
-                    value={formData.fullname}
-                    onChange={handleChange}
-                    required
-                />
+                <input type="text" id="fullname" name="fullname" value={formData.fullname} onChange={handleChange} required />
             </div>
             <div>
                 <label htmlFor="username">Username:</label> <br />
-                <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                />
+                <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required />
+            </div>
+            <div>
+                <label htmlFor="email">Email:</label> <br />
+                <input type="text" id="email" name="email" value={formData.email} onChange={handleChange} required />
             </div>
             <div>
                 <label htmlFor="password">Password:</label> <br />
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
+                <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required />
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit">Register</button>
             <div className="change-page">
                 <Link to="/login" className="link">
                     Login

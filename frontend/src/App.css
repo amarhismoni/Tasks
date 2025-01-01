@@ -4,48 +4,273 @@ body {
     display: flex;
     justify-content: center;
     background-color: white;
-    padding: 50px 0;
+    overflow: hidden;
 }
 
 form {
-  box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  border-radius: 10px;
+    margin-top: 70px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 10px;
+}
+
+label {
+    font-size: 15px;
+}
+
+input {
+    height: 20px;
+    width: 400px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    margin: 10px 0 20px 0;
+    border: none;
+}
+
+button {
+    background-color: rgb(99, 127, 197);
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.change-page {
+    text-align: center;
+}
+
+.link {
+    color: rgb(39, 39, 39);
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.under-nav {
+    justify-self: center;
+    width: 80vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-container {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    gap: 10px;
+}
+
+.task-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-self: center;
+    flex-wrap: nowrap;
+    height: 70vh;
+    width: 80%;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+.task-group {
+    width: 100%;
+    padding-left: 70px;
+}
+
+.task-group h3 {
+    margin-left: 10px;
 }
 
 
-label{
-  font-size: 15px;
+.task-grid{
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 15px;
+  width: 95%;
 }
 
-input{
-  height: 20px;
-  width: 400px;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
-  margin: 10px 0 20px 0;
-  border: none;
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-button{
-  background-color: rgb(99, 127, 197);
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  color: white;
-  font-weight: 700;
+.modal-form {
+    box-shadow: none;
+    padding: 0 30px;
 }
 
-.change-page{
-  text-align: center;
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
 }
 
-.link{
-  color: rgb(39, 39, 39);
-  text-decoration: none;
-  font-size: 13px;
+.modal-content h2 {
+    margin-top: 30px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.modal-input {
+    width: 300px;
+}
+
+.archive-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    width: 58vw;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.archive-modal-body {
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    height: 70%;
+    padding-top: 20px;
+    text-align: center;
+    overflow: scroll;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 20px;
+    border-radius: 20px;
+    margin-top: 15px;
+}
+
+.archive-task-group > h4 {
+    margin-left: 10px;
+}
+
+.archive-task {
+    width: 46vw;
+}
+
+.smaller-text {
+    font-size: 13px;
+}
+
+.archive-right {
+    display: flex;
+    gap: 20px;
+}
+
+.archive-task-description {
+    width: 60%;
+    overflow-wrap: break-word;
+    text-align: left;
+}
+
+.archive-close {
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .task-cards {
+        grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .task-cards {
+        grid-template-columns: 1fr; /* One column for small screens */
+    }
+}
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Forgot Password Modal */
+.forgot-password-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    text-align: center;
+}
+
+.forgot-password-modal label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.forgot-password-modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-actions button[type="submit"] {
+    background-color: rgb(99, 127, 197);
+    color: white;
+}
+
+.modal-actions button[type="submit"]:hover {
+    background-color: rgb(80, 100, 160);
+}
+
+.modal-actions button[type="button"] {
+    background-color: #ccc;
+    color: #333;
+}
+
+.modal-actions button[type="button"]:hover {
+    background-color: #bbb;
 }

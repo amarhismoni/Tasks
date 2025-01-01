@@ -1,20 +1,9 @@
 const { Users } = require("../models/model");
 
-exports.findUserByUsername = async (username) => {
+exports.createUser = async (fullname, username, email, password) => {
     try {
-        const user = await Users.findOne({
-            where: { username: username },
-        });
-        return user;
-    } catch (error) {
-        console.error("Error in findUserByUsername:", error);
-        throw error;
-    }
-};
-
-exports.createUser = async (fullname, username, password) => {
-    try {
-        const newUser = await Users.create({ fullname, username, password });
+        console.log(password)
+        const newUser = await Users.create({ fullname, username, email, password });
         return newUser;
     } catch (error) {
         console.error("Error in createUser:", error);

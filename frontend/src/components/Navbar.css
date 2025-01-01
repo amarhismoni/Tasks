@@ -1,0 +1,112 @@
+/* Reset and general styles */
+*{
+    padding: 0;
+    margin: 0;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  width: 100vw;
+  height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgb(99, 127, 197);
+  color: #fff;
+  padding: 20px 20px;
+  height: 70px;
+  width: 100vw;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.navbar-left{
+    color: #fff;
+    font-size: 0.8rem;
+    margin-left: 15px;
+}
+
+.navbar-name{
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.navbar-header {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  /* margin-right: auto; */
+}
+
+.navbar-logo {
+  margin-right: 10px;
+}
+
+.app-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Menu items section with equal spacing */
+.navbar-links {
+  display: flex;
+  justify-content: space-between; /* Spread items equally */
+  gap: 10px; /* Add spacing between buttons */
+}
+
+.navbar-links button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-links button:hover {
+  background-color: #555;
+  color: #ddd;
+}
+
+/* Ensure the logo and title start from the very edge */
+.navbar {
+  padding-left: 0;
+}
+
+.navbar-logo img {
+  margin-left: 10px; /* Ensure slight spacing between the edge and the logo */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .navbar-title {
+    font-size: 1.2rem;
+  }
+
+  .navbar-links {
+    gap: 10px; /* Reduce gap on smaller screens */
+  }
+
+  .navbar-links button {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .app-logo {
+    width: 40px;
+    height: 40px;
+  }
+}

@@ -7,12 +7,6 @@ const sequelize = new Sequelize("tasks", "root", "", {
 });
 
 const Users = sequelize.define("users", {
-    id: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
-    },
     fullname: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
@@ -20,66 +14,68 @@ const Users = sequelize.define("users", {
     username: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
+        unique: true,
+    },
+    email: {
+        type: Sequelize.DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: { isEmail: true },
     },
     password: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false,
-    },
-});
-
-const Tasks = sequelize.define("tasks", {
-    id: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-    },
-    taskName: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
     },
-    taskDescription: {
+    resetToken: {
         type: Sequelize.DataTypes.STRING,
         allowNull: true,
     },
-    date: {
+    resetTokenExpire: {
         type: Sequelize.DataTypes.DATE,
-        allowNull: false,
-    },
-    userId: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false,
-        reference: {
-
-        }
-    },
-    isArchived: {
-        type: Sequelize.DataTypes.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
     },
 });
 
-const Categories = sequelize.define("categories", {
-    id: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true,
+const Tasks = sequelize.define(
+    "tasks",
+    {
+        taskId: {
+            type: Sequelize.DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        userId: {
+            type: Sequelize.DataTypes.INTEGER,
+            allowNull: false,
+        },
+        taskDescription: {
+            type: Sequelize.DataTypes.STRING,
+            allowNull: false,
+        },
+        taskDate: {
+            type: Sequelize.DataTypes.DATEONLY,
+            allowNull: false,
+        },
+        taskTime: {
+            type: Sequelize.DataTypes.TIME,
+            allowNull: false,
+        },
+        taskStatus: {
+            type: Sequelize.DataTypes.ENUM("Pending", "Done", "Archived"),
+            defaultValue: "Pending",
+        },
     },
-    categorieName: {
-        type: Sequelize.DataTypes.STRING,
-        allowNull: false,
-    },
-});
-
-Categories.belongsToMany(Tasks, { through: "categoryTasks" });
+    {
+        tableName: "tasks",
+        timestamps: false,
+    }
+);
 Users.hasMany(Tasks, {
-    foreignKey: 'userId'
+    foreignKey: "userId",
 });
 
 (async () => {
     await sequelize.sync({ force: false });
 })();
 
-//User, Tasks, Categories, TasksCategory
-
-module.exports = {Users, Tasks, Categories}
+module.exports = { Users, Tasks };
