@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Tasks from "./pages/Tasks";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ResetPassword from "./components/ResetPassword";
 import './App.css'
 
 function App() {
@@ -13,7 +12,6 @@ function App() {
                     <Route path="/home" element={<Tasks />} />
                     <Route path="/register" exact element={<Register />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/reset-password/:token" element={<ResetPassword />} />
                 </Routes>
             </BrowserRouter>
         </div>

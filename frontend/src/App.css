@@ -174,8 +174,17 @@ button {
 
 .archive-task {
     width: 46vw;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
+
+.archive-modal-actions{
+    display: flex;
+    gap: 20px;
+}
 .smaller-text {
     font-size: 13px;
 }
@@ -193,6 +202,7 @@ button {
 
 .archive-close {
     margin-top: 20px;
+    width: 100px;
 }
 
 /* Responsive Design */
@@ -273,4 +283,13 @@ button {
 
 .modal-actions button[type="button"]:hover {
     background-color: #bbb;
+}
+
+.reset-modal-actions{
+    display: flex;
+    width: 110%;
+    justify-content: space-between;
+}
+.reset-modal-actions button{
+    width: 45%;
 }

@@ -16,6 +16,7 @@ const translations = {
         time: "Time",
         save: "Save",
         cancel: "Cancel",
+        deleteArchives: "Delete archives",
     },
     al: {
         welcome: "Mirë se vini",
@@ -33,6 +34,7 @@ const translations = {
         time: "Koha",
         save: "Ruaj",
         cancel: "Anulo",
+        deleteArchives: "Fshi arkivat",
     },
 };
 

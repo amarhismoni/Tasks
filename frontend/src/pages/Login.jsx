@@ -11,7 +11,9 @@ function Login() {
 
     const [error, setError] = useState("");
     const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [secretAnswer, setSecretAnswer] = useState("")
+    const [newPassword, setNewPassword] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,7 +25,7 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(""); // Clear previous errors
+        setError("");
 
         const urlencoded = new URLSearchParams(formData).toString();
 
@@ -59,26 +61,35 @@ function Login() {
 
     const handleResetPasswordRequest = async (e) => {
         e.preventDefault();
+        setError(""); // Clear any previous errors
+    
         try {
-            const response = await fetch("http://localhost:8585/password/forgot-password", {
+            const response = await fetch("http://localhost:8585/auth/password-reset", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ username, resetToken: secretAnswer, newPassword }), // Use resetToken here
             });
+    
             const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to reset password.");
+            }
+    
             if (data.success) {
-                alert("Password reset link sent to your email.");
-                setShowForgotPasswordModal(false);
+                alert("Password reset successfully. Please log in again.");
+                setShowForgotPasswordModal(false); // Close the modal
+                navigate("/login"); // Redirect to the login page
             } else {
-                setError(data.message);
+                setError(data.message); // Display error message
             }
         } catch (err) {
-            setError("An error occurred. Please try again.");
+            console.error("Password reset error:", err.message);
+            setError(err.message || "An error occurred. Please try again.");
         }
     };
-
     const closeModal = () => {
         setShowForgotPasswordModal(false);
     };
@@ -125,27 +136,42 @@ function Login() {
 
             {/* Forgot Password Modal */}
             {showForgotPasswordModal && (
-                <div className="modal-overlay">
-                    <div className="forgot-password-modal">
-                        <h3>Reset Password</h3>
-                        <form onSubmit={handleResetPasswordRequest}>
-                            <label>Enter your email:</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                            <div className="modal-actions">
-                                <button type="submit">Send Reset Link</button>
-                                <button type="button" onClick={closeModal}>
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+    <div className="modal-overlay">
+        <div className="forgot-password-modal">
+            <h3>Reset Password</h3>
+            {error && <p className="error-message">{error}</p>}
+            <form onSubmit={handleResetPasswordRequest}>
+                <label>Enter your username:</label>
+                <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+                <label>Enter your secret answer:</label>
+                <input
+                    type="text"
+                    value={secretAnswer}
+                    onChange={(e) => setSecretAnswer(e.target.value)}
+                    required
+                />
+                <label>Enter your new password:</label>
+                <input
+                    type="password" // Use type="password" for security
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                />
+                <div className="reset-modal-actions">
+                    <button type="submit">Reset password</button>
+                    <button type="button" onClick={closeModal}>
+                        Cancel
+                    </button>
                 </div>
-            )}
+            </form>
+        </div>
+    </div>
+)}
         </div>
     );
 }

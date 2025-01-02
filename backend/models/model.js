@@ -16,19 +16,13 @@ const Users = sequelize.define("users", {
         allowNull: false,
         unique: true,
     },
-    email: {
-        type: Sequelize.DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: { isEmail: true },
-    },
     password: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
     },
     resetToken: {
         type: Sequelize.DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     resetTokenExpire: {
         type: Sequelize.DataTypes.DATE,

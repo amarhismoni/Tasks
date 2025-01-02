@@ -3,7 +3,7 @@ import Task from "../components/Task";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
-import translations from '../components/translation';
+import translations from "../components/translation";
 
 function Tasks() {
     const [tasks, setTasks] = useState([]);
@@ -22,6 +22,7 @@ function Tasks() {
         fetchTasks();
     }, [navigate]);
 
+    // Fetch tasks from the backend
     const fetchTasks = async () => {
         const token = localStorage.getItem("jwtToken");
         if (!token) {
@@ -272,7 +273,7 @@ function Tasks() {
             } else {
                 console.error("Failed to update task statuses:", data.message);
                 setError(data.message);
-                alert(error)
+                alert(error);
             }
         } catch (err) {
             console.error(err);
@@ -287,7 +288,7 @@ function Tasks() {
             navigate("/login");
             return;
         }
-        setShowArchivedModal(true);
+    
         try {
             const response = await fetch("http://localhost:8585/tasks/archived", {
                 method: "GET",
@@ -296,9 +297,14 @@ function Tasks() {
                 },
             });
             const data = await response.json();
-
+    
             if (data.success) {
-                setArchivedTasks(data.tasks);
+                if (data.tasks.length > 0) {
+                    setArchivedTasks(data.tasks); // Set the archived tasks
+                    setShowArchivedModal(true); // Open the modal
+                } else {
+                    alert("No archived tasks found."); // Show an alert if there are no archived tasks
+                }
             } else {
                 console.error("Failed to fetch tasks:", data.message);
             }
@@ -308,25 +314,46 @@ function Tasks() {
         }
     };
 
+    const handleDeleteArchives = async () => {
+        const token = localStorage.getItem("jwtToken");
+        if (!token) {
+            setError("No token found. Please log in.");
+            navigate("/login");
+            return;
+        }
+        if (window.confirm("Are you sure you want to delete all archived tasks?")) {
+        try {
+            const response = await fetch("http://localhost:8585/tasks/archived", {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert("Task deleted successfully");
+                await refreshTasks();
+                setShowArchivedModal(false);
+            } else {
+                console.error("Failed to delete task:", data.message);
+                setError(data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            setError(err.message || "An unexpected error occurred.");
+        }
+    }
+    };
+
     return (
         <div>
-            <Navbar
-                language={language}
-                toggleLanguage={toggleLanguage}
-                fullname={fullname}
-                onArchiveTask={handleArchiveTask}
-                onShowArchivedTasks={handleShowArchivedTasks}
-            />
+            <Navbar language={language} toggleLanguage={toggleLanguage} fullname={fullname} onArchiveTask={handleArchiveTask} onShowArchivedTasks={handleShowArchivedTasks} />
             <div className="under-nav">
                 <div className="search-container">
                     <label htmlFor="searchTasks">{translations[language].searchTasks}:</label>
-                    <input
-                        type="text"
-                        placeholder={translations[language].searchTasks}
-                        name="searchTasks"
-                        value={searchQuery}
-                        onChange={handleSearch}
-                    />
+                    <input type="text" placeholder={translations[language].searchTasks} name="searchTasks" value={searchQuery} onChange={handleSearch} />
                 </div>
                 <div className="create-task-container">
                     <button onClick={() => setShowModal(true)}>{translations[language].addNewTask}</button>
@@ -376,26 +403,14 @@ function Tasks() {
                                     maxLength={100} // Prevent typing beyond 100 characters
                                 />
                             </label>
-                            <p style={{ fontSize: "12px", color: "#666" }}>
-                                Characters remaining: {100 - newTask.taskDescription.length}
-                            </p>
+                            <p style={{ fontSize: "12px", color: "#666" }}>Characters remaining: {100 - newTask.taskDescription.length}</p>
                             <label>
                                 {translations[language].date}:
-                                <input
-                                    type="date"
-                                    value={newTask.taskDate}
-                                    onChange={(e) => setNewTask({ ...newTask, taskDate: e.target.value })}
-                                    className="modal-input"
-                                />
+                                <input type="date" value={newTask.taskDate} onChange={(e) => setNewTask({ ...newTask, taskDate: e.target.value })} className="modal-input" />
                             </label>
                             <label>
                                 {translations[language].time}:
-                                <input
-                                    type="time"
-                                    value={newTask.taskTime}
-                                    onChange={(e) => setNewTask({ ...newTask, taskTime: e.target.value })}
-                                    className="modal-input"
-                                />
+                                <input type="time" value={newTask.taskTime} onChange={(e) => setNewTask({ ...newTask, taskTime: e.target.value })} className="modal-input" />
                             </label>
                             <div className="modal-actions">
                                 <button type="submit">{translations[language].save}</button>
@@ -421,8 +436,12 @@ function Tasks() {
                                             <div key={task.taskId} className="task archive-task smaller-text">
                                                 <p className="archive-task-description">{task.taskDescription}</p>
                                                 <div className="archive-right">
-                                                    <p>{translations[language].dueTime}: {task.taskTime}</p>
-                                                    <p>{translations[language].status}: {task.taskStatus}</p>
+                                                    <p>
+                                                        {translations[language].dueTime}: {task.taskTime}
+                                                    </p>
+                                                    <p>
+                                                        {translations[language].status}: {task.taskStatus}
+                                                    </p>
                                                 </div>
                                             </div>
                                         ))}
@@ -432,9 +451,14 @@ function Tasks() {
                                 <p>{translations[language].noArchivedTasks}</p>
                             )}
                         </div>
-                        <button onClick={() => setShowArchivedModal(false)} className="archive-close">
-                            {translations[language].close}
-                        </button>
+                        <div className="archive-modal-actions">
+                            <button onClick={handleDeleteArchives} className="archive-close">
+                                {translations[language].deleteArchives}
+                            </button>
+                            <button onClick={() => setShowArchivedModal(false)} className="archive-close">
+                                {translations[language].close}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

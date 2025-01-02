@@ -9,7 +9,7 @@ const SECRET_KEY = "secret";
 // Register Route
 Router.post("/register", express.urlencoded({ extended: true }), async (req, res) => {
 
-    const { fullname, username, email, password } = req.body;
+    const { fullname, username, password, secretAnswer } = req.body;
     
 
     const hashPassword = async (password) => {
@@ -32,8 +32,7 @@ Router.post("/register", express.urlencoded({ extended: true }), async (req, res
 
         console.log(hashedPassword)
 
-
-        const user = await userRepository.createUser(fullname, username, email, hashedPassword);
+        const user = await userRepository.createUser(fullname, username, hashedPassword, secretAnswer);
 
         return res.status(201).json({
             success: true,
@@ -103,4 +102,22 @@ Router.post("/login", express.urlencoded({ extended: true }), async (req, res) =
     }
 });
 
+
+Router.post("/password-reset", async (req, res) => {
+    const { username, resetToken, newPassword } = req.body; // Use resetToken here
+
+    try {
+        // Verify the resetToken
+        const user = await userRepository.verifySecretAnswer(username, resetToken);
+
+        // Change the user's password
+        await userRepository.changeUserPassword(user.id, newPassword);
+
+        // Return success response
+        res.json({ success: true, message: "Password reset successfully." });
+    } catch (error) {
+        console.error("Password reset error:", error.message);
+        res.status(400).json({ success: false, message: error.message });
+    }
+});
 module.exports = Router;

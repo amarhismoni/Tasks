@@ -1,9 +1,10 @@
 const { Users } = require("../models/model");
 
-exports.createUser = async (fullname, username, email, password) => {
+exports.createUser = async (fullname, username, password, resetToken) => {
     try {
-        console.log(password)
-        const newUser = await Users.create({ fullname, username, email, password });
+        console.log("Password:", password);
+        console.log("Reset Token:", resetToken);
+        const newUser = await Users.create({ fullname, username, password, resetToken });
         return newUser;
     } catch (error) {
         console.error("Error in createUser:", error);
@@ -21,6 +22,56 @@ exports.findUserByUsername = async (username) => {
         return user || null; 
     } catch (error) {
         console.error("Error finding user by username:", error);
+        throw error;
+    }
+};
+
+const bcrypt = require("bcrypt");
+
+exports.changeUserPassword = async (id, password) => {
+    try {
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Update the user's password
+        const [updated] = await Users.update(
+            { password: hashedPassword },
+            {
+                where: {
+                    id: id,
+                },
+            }
+        );
+
+        if (updated) {
+            return true; // Password updated successfully
+        } else {
+            throw new Error("User not found or password not updated.");
+        }
+    } catch (error) {
+        console.error("Error in changeUserPassword:", error);
+        throw error;
+    }
+};
+exports.verifySecretAnswer = async (username, secretAnswer) => {
+    try {
+        const user = await Users.findOne({
+            where: {
+                username: username,
+            },
+        });
+
+        if (!user) {
+            throw new Error("User not found.");
+        }
+
+        if (user.resetToken === secretAnswer) {
+            return user; 
+        } else {
+            throw new Error("Invalid secret answer.");
+        }
+    } catch (error) {
+        console.error("Error in verifySecretAnswer:", error);
         throw error;
     }
 };

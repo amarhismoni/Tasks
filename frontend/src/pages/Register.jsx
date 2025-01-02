@@ -6,7 +6,7 @@ function Register() {
         fullname: "",
         username: "",
         password: "",
-        email: "",
+        secretAnswer: "",
     });
 
     const handleChange = (e) => {
@@ -36,7 +36,7 @@ function Register() {
                     fullname: "",
                     username: "",
                     password: "",
-                    email: "",
+                    secretAnswer: "",
                 });
             } else {
                 alert(data.message || "Regjistrimi nuk u kry, Provoni prap");
@@ -44,7 +44,7 @@ function Register() {
                     fullname: "",
                     username: "",
                     password: "",
-                    email: "",
+                    secretAnswer: "",
                 });
             }
         } catch (error) {
@@ -64,8 +64,8 @@ function Register() {
                 <input type="text" id="username" name="username" value={formData.username} onChange={handleChange} required />
             </div>
             <div>
-                <label htmlFor="email">Email:</label> <br />
-                <input type="text" id="email" name="email" value={formData.email} onChange={handleChange} required />
+                <label htmlFor="secretAnswer">Secret answer:</label> <br />
+                <input type="text" id="secretAnswer" name="secretAnswer" value={formData.secretAnswer} onChange={handleChange} required />
             </div>
             <div>
                 <label htmlFor="password">Password:</label> <br />

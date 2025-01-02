@@ -10,9 +10,7 @@ exports.findTasksByUserId = async (userId) => {
                     [Op.or]: ["Pending", "Done"], // Include both "Pending" and "Done" statuses
                 },
             },
-
         });
-
 
         return tasks;
     } catch (error) {
@@ -20,7 +18,6 @@ exports.findTasksByUserId = async (userId) => {
         throw new Error("Unable to fetch tasks");
     }
 };
-
 
 exports.addTask = async (taskDescription, userId, taskDate, taskTime) => {
     if (!taskDescription || !userId || !taskDate || !taskTime) {
@@ -43,7 +40,6 @@ exports.addTask = async (taskDescription, userId, taskDate, taskTime) => {
         throw new Error("Unable to add task");
     }
 };
-
 
 exports.updateTask = async (taskId, taskDescription, userId, taskDate, taskTime, taskStatus) => {
     // Validate input
@@ -91,13 +87,13 @@ exports.updateTask = async (taskId, taskDescription, userId, taskDate, taskTime,
     }
 };
 
-exports.updateTaskStatus = async(taskId) => {
-    if(!taskId){
-        console.warn("task not found")
+exports.updateTaskStatus = async (taskId) => {
+    if (!taskId) {
+        console.warn("task not found");
     }
 
     try {
-         const [updatedRowsCount] = await Tasks.update(
+        const [updatedRowsCount] = await Tasks.update(
             { taskStatus: "Done" }, // New status
             {
                 where: {
@@ -107,7 +103,7 @@ exports.updateTaskStatus = async(taskId) => {
             }
         );
 
-         if (updatedRowsCount === 0) {
+        if (updatedRowsCount === 0) {
             console.warn(`Task with ID ${taskId} not found or status was not "Pending".`);
             return null;
         }
@@ -115,25 +111,25 @@ exports.updateTaskStatus = async(taskId) => {
         // Fetch the updated record
         const updatedTask = await Tasks.findOne({ where: { taskId } });
         return updatedTask;
-    } catch (error){
+    } catch (error) {
         console.error("Error updating task status:", error);
         throw new Error("Unable to update task status");
     }
-}
+};
 
-exports.deleteTask = async (taskId) =>{
-    try{
+exports.deleteTask = async (taskId) => {
+    try {
         const deletedTask = await Tasks.destroy({
             where: {
-                taskId: taskId
-            }
-        })
+                taskId: taskId,
+            },
+        });
 
-        console.log("task deleted")
+        console.log("task deleted");
     } catch (error) {
-        console.error(error)
+        console.error(error);
     }
-}
+};
 
 exports.archiveTasks = async (userId) => {
     try {
@@ -164,9 +160,8 @@ exports.findArchivedTasks = async (userId) => {
         const tasks = await Tasks.findAll({
             where: {
                 userId, // User ID filter
-                taskStatus: "Archived"
+                taskStatus: "Archived",
             },
-
         });
 
         return tasks;
@@ -174,4 +169,20 @@ exports.findArchivedTasks = async (userId) => {
         console.error("Error fetching tasks by userId:", error);
         throw new Error("Unable to fetch tasks");
     }
-}
+};
+
+exports.deleteArchivedTasks = async (userId) => {
+    try {
+        const deletedArchivedTask = await Tasks.destroy({
+            where: {
+                userId: userId,
+                taskStatus: "Archived",
+            },
+        });
+        console.log("tasks deleted");
+
+        return deletedArchivedTask;
+    } catch (error) {
+        console.error(error);
+    }
+};

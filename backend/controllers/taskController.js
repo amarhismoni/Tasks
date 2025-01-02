@@ -225,5 +225,42 @@ Router.delete("/", passport.authenticate("jwt", { session: false }), express.url
     }
 });
 
+Router.delete("/archived", passport.authenticate("jwt", { session: false }), async (req, res) => {
+    const userId = req.user.id; // Correctly extract userId from req.user
+
+    console.log("User ID:", userId); // Log userId for debugging
+
+    if (!userId) {
+        return res.status(400).json({
+            success: false,
+            message: "User ID is required.",
+        });
+    }
+
+    try {
+        // Delete archived tasks for the user
+        const deletedRows = await taskRepository.deleteArchivedTasks(userId);
+
+        if (deletedRows > 0) {
+            return res.status(200).json({
+                success: true,
+                message: "Archived tasks deleted successfully.",
+                deletedRows: deletedRows,
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "No archived tasks found for the user.",
+            });
+        }
+    } catch (error) {
+        console.error("Error deleting archived tasks:", error.stack || error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while deleting archived tasks.",
+        });
+    }
+});
+
 
 module.exports = Router;
