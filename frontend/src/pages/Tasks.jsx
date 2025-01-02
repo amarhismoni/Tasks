@@ -22,7 +22,6 @@ function Tasks() {
         fetchTasks();
     }, [navigate]);
 
-    // Fetch tasks from the backend
     const fetchTasks = async () => {
         const token = localStorage.getItem("jwtToken");
         if (!token) {
@@ -97,8 +96,6 @@ function Tasks() {
             navigate("/login");
             return;
         }
-
-        // Validate task description length
         if (newTask.taskDescription.length > 100) {
             setError("Task description cannot exceed 100 characters.");
             return;
@@ -145,8 +142,6 @@ function Tasks() {
             navigate("/login");
             return;
         }
-
-        // Validate task description length
         if (taskDescription.length > 100) {
             setError("Task description cannot exceed 100 characters.");
             return;
@@ -300,10 +295,10 @@ function Tasks() {
     
             if (data.success) {
                 if (data.tasks.length > 0) {
-                    setArchivedTasks(data.tasks); // Set the archived tasks
-                    setShowArchivedModal(true); // Open the modal
+                    setArchivedTasks(data.tasks); 
+                    setShowArchivedModal(true); 
                 } else {
-                    alert("No archived tasks found."); // Show an alert if there are no archived tasks
+                    alert("No archived tasks found."); 
                 }
             } else {
                 console.error("Failed to fetch tasks:", data.message);
@@ -400,7 +395,7 @@ function Tasks() {
                                     onChange={(e) => setNewTask({ ...newTask, taskDescription: e.target.value })}
                                     placeholder={translations[language].taskDescription}
                                     className="modal-input"
-                                    maxLength={100} // Prevent typing beyond 100 characters
+                                    maxLength={100}
                                 />
                             </label>
                             <p style={{ fontSize: "12px", color: "#666" }}>Characters remaining: {100 - newTask.taskDescription.length}</p>

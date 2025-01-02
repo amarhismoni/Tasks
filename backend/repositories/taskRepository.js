@@ -5,9 +5,9 @@ exports.findTasksByUserId = async (userId) => {
     try {
         const tasks = await Tasks.findAll({
             where: {
-                userId, // User ID filter
+                userId,
                 taskStatus: {
-                    [Op.or]: ["Pending", "Done"], // Include both "Pending" and "Done" statuses
+                    [Op.or]: ["Pending", "Done"], 
                 },
             },
         });
@@ -42,21 +42,15 @@ exports.addTask = async (taskDescription, userId, taskDate, taskTime) => {
 };
 
 exports.updateTask = async (taskId, taskDescription, userId, taskDate, taskTime, taskStatus) => {
-    // Validate input
     if (!taskId || !taskDescription || !userId || !taskDate || !taskTime || !taskStatus) {
         throw new Error("Missing required task data for update");
     }
 
-    console.log("Updating task with ID:", taskId); // Debug log for task ID
-    console.log("Update data:", { taskDescription, userId, taskDate, taskTime, taskStatus }); // Debug log for update data
+    console.log("Updating task with ID:", taskId); 
+    console.log("Update data:", { taskDescription, userId, taskDate, taskTime, taskStatus }); 
 
     try {
-        // const task = await Tasks.findAll({
-        //     where: {
-        //         taskId: taskId
-        //     }
-        // })
-        // console.log(task)
+        
         const [updatedRowsCount] = await Tasks.update(
             {
                 userId: userId,
@@ -70,15 +64,13 @@ exports.updateTask = async (taskId, taskDescription, userId, taskDate, taskTime,
             }
         );
 
-        // Check if any rows were updated
         if (updatedRowsCount === 0) {
             console.warn(`Task with ID ${taskId} not found or no changes were made.`);
-            return null; // Return null or a specific message
+            return null;
         }
 
-        // Fetch the updated task
         const updatedTask = await Tasks.findOne({ where: { taskId } });
-        console.log("Updated task:", updatedTask); // Debug log for updated task
+        console.log("Updated task:", updatedTask); 
 
         return updatedTask;
     } catch (error) {
@@ -94,11 +86,11 @@ exports.updateTaskStatus = async (taskId) => {
 
     try {
         const [updatedRowsCount] = await Tasks.update(
-            { taskStatus: "Done" }, // New status
+            { taskStatus: "Done" },
             {
                 where: {
-                    taskId: taskId, // Identify the record by taskId
-                    taskStatus: "Pending", // Update only if the current status is "Pending"
+                    taskId: taskId,
+                    taskStatus: "Pending", 
                 },
             }
         );
@@ -107,8 +99,6 @@ exports.updateTaskStatus = async (taskId) => {
             console.warn(`Task with ID ${taskId} not found or status was not "Pending".`);
             return null;
         }
-
-        // Fetch the updated record
         const updatedTask = await Tasks.findOne({ where: { taskId } });
         return updatedTask;
     } catch (error) {
@@ -133,7 +123,6 @@ exports.deleteTask = async (taskId) => {
 
 exports.archiveTasks = async (userId) => {
     try {
-        // Update tasks with status "Done" to "Archived" for the user
         const [updatedRowsCount] = await Tasks.update(
             { taskStatus: "Archived" },
             {
@@ -148,7 +137,7 @@ exports.archiveTasks = async (userId) => {
             console.warn(`No tasks with status "Done" were found for user ${userId}.`);
         }
 
-        return updatedRowsCount; // Return the number of updated tasks
+        return updatedRowsCount; 
     } catch (error) {
         console.error("Error updating task statuses:", error);
         throw new Error("Unable to update task statuses");
@@ -159,7 +148,7 @@ exports.findArchivedTasks = async (userId) => {
     try {
         const tasks = await Tasks.findAll({
             where: {
-                userId, // User ID filter
+                userId,
                 taskStatus: "Archived",
             },
         });

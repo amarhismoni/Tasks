@@ -44,14 +44,13 @@ function Login() {
                 throw new Error(result.message || "Login failed.");
             }
 
-            // Store token
             localStorage.setItem("jwtToken", result.token);
 
-            // Navigate to the home page
+
             navigate("/home");
         } catch (err) {
             console.error("Login error:", err.message);
-            setError(err.message); // Display error to the user
+            setError(err.message);
         }
     };
 
@@ -61,7 +60,7 @@ function Login() {
 
     const handleResetPasswordRequest = async (e) => {
         e.preventDefault();
-        setError(""); // Clear any previous errors
+        setError("");
     
         try {
             const response = await fetch("http://localhost:8585/auth/password-reset", {
@@ -69,7 +68,7 @@ function Login() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ username, resetToken: secretAnswer, newPassword }), // Use resetToken here
+                body: JSON.stringify({ username, resetToken: secretAnswer, newPassword }),
             });
     
             const data = await response.json();
@@ -80,10 +79,10 @@ function Login() {
     
             if (data.success) {
                 alert("Password reset successfully. Please log in again.");
-                setShowForgotPasswordModal(false); // Close the modal
-                navigate("/login"); // Redirect to the login page
+                setShowForgotPasswordModal(false); 
+                navigate("/login"); 
             } else {
-                setError(data.message); // Display error message
+                setError(data.message); 
             }
         } catch (err) {
             console.error("Password reset error:", err.message);
@@ -134,7 +133,6 @@ function Login() {
                 </p>
             </form>
 
-            {/* Forgot Password Modal */}
             {showForgotPasswordModal && (
     <div className="modal-overlay">
         <div className="forgot-password-modal">
@@ -157,7 +155,7 @@ function Login() {
                 />
                 <label>Enter your new password:</label>
                 <input
-                    type="password" // Use type="password" for security
+                    type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required

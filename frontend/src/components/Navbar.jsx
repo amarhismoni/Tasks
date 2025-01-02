@@ -1,19 +1,17 @@
 import React from 'react';
 import './Navbar.css';
-import { FaSignOutAlt } from 'react-icons/fa'; // Import exit icon from React Icons
-import { useNavigate } from 'react-router-dom'; // For navigation
+import { FaSignOutAlt } from 'react-icons/fa'; 
+import { useNavigate } from 'react-router-dom'; 
 
 const Navbar = ({ toggleLanguage, language, fullname, onArchiveTask, onShowArchivedTasks }) => {
     const navigate = useNavigate();
 
-    // Logout function
+
     const handleLogout = () => {
       if( window.confirm("Are you sure you want to exit?")){
-        localStorage.removeItem('jwtToken'); // Remove the JWT token
+        localStorage.removeItem('jwtToken'); 
         navigate('/login');
       }
-     
-         // Redirect to the login page
     };
 
     const handleArchiveTask = () => {
@@ -46,7 +44,7 @@ const Navbar = ({ toggleLanguage, language, fullname, onArchiveTask, onShowArchi
                     {language === 'en' ? 'AL' : 'EN'}
                 </button>
                 <button onClick={handleLogout} className="logout-button">
-                    <FaSignOutAlt /> {/* Exit icon */}
+                    <FaSignOutAlt />
                 </button>
             </div>
         </nav>

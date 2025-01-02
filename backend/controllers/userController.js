@@ -104,16 +104,14 @@ Router.post("/login", express.urlencoded({ extended: true }), async (req, res) =
 
 
 Router.post("/password-reset", async (req, res) => {
-    const { username, resetToken, newPassword } = req.body; // Use resetToken here
+    const { username, resetToken, newPassword } = req.body;
 
     try {
-        // Verify the resetToken
+        
         const user = await userRepository.verifySecretAnswer(username, resetToken);
-
-        // Change the user's password
+       
         await userRepository.changeUserPassword(user.id, newPassword);
 
-        // Return success response
         res.json({ success: true, message: "Password reset successfully." });
     } catch (error) {
         console.error("Password reset error:", error.message);

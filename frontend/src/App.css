@@ -205,19 +205,19 @@ button {
     width: 100px;
 }
 
-/* Responsive Design */
+
 @media (max-width: 1200px) {
     .task-cards {
-        grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+        grid-template-columns: repeat(2, 1fr); 
     }
 }
 
 @media (max-width: 768px) {
     .task-cards {
-        grid-template-columns: 1fr; /* One column for small screens */
+        grid-template-columns: 1fr;
     }
 }
-/* Modal Overlay */
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -231,7 +231,7 @@ button {
     z-index: 1000;
 }
 
-/* Forgot Password Modal */
+
 .forgot-password-modal {
     background: white;
     padding: 20px;

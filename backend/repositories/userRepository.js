@@ -30,10 +30,8 @@ const bcrypt = require("bcrypt");
 
 exports.changeUserPassword = async (id, password) => {
     try {
-        // Hash the new password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Update the user's password
         const [updated] = await Users.update(
             { password: hashedPassword },
             {
@@ -44,7 +42,7 @@ exports.changeUserPassword = async (id, password) => {
         );
 
         if (updated) {
-            return true; // Password updated successfully
+            return true;
         } else {
             throw new Error("User not found or password not updated.");
         }

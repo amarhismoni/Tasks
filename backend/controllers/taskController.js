@@ -66,7 +66,7 @@ Router.get("/archived", passport.authenticate("jwt", { session: false }), async 
 Router.post(
     "/",
     passport.authenticate("jwt", { session: false }),
-    express.urlencoded({ extended: true }), // Parse x-www-form-urlencoded
+    express.urlencoded({ extended: true }),
     async (req, res) => {
         const userId = req.user.id;
         const { taskDescription, taskDate, taskTime } = req.body;
@@ -96,7 +96,6 @@ Router.put("/", passport.authenticate("jwt", { session: false }), express.urlenc
     const { taskId, taskDescription, taskDate, taskTime, taskStatus } = req.body;
     const userId = req.user.id;
 
-    // Validate the required fields
     if (!taskId || !taskDescription || !taskDate || !taskTime || !taskStatus) {
         return res.status(400).json({
             success: false,
@@ -105,7 +104,6 @@ Router.put("/", passport.authenticate("jwt", { session: false }), express.urlenc
     }
 
     try {
-        // New task details to be updated
         const updatedTask = await taskRepository.updateTask(taskId, taskDescription, userId, taskDate, taskTime, taskStatus);
 
         if (!updatedTask) {
@@ -115,7 +113,6 @@ Router.put("/", passport.authenticate("jwt", { session: false }), express.urlenc
             });
         }
 
-        // Success response
         return res.status(200).json({
             success: true,
             message: "Task updated successfully",
@@ -133,7 +130,6 @@ Router.put("/", passport.authenticate("jwt", { session: false }), express.urlenc
 Router.patch("/change-status", passport.authenticate("jwt", { session: false }), express.urlencoded({ extended: true }), async (req, res) => {
     const { taskId } = req.body;
 
-    // Validate the required fields
     if (!taskId) {
         return res.status(400).json({
             success: false,
@@ -142,7 +138,6 @@ Router.patch("/change-status", passport.authenticate("jwt", { session: false }),
     }
 
     try {
-        // New task details to be updated
         const updatedTask = await taskRepository.updateTaskStatus(taskId);
 
         if (!updatedTask) {
@@ -152,7 +147,6 @@ Router.patch("/change-status", passport.authenticate("jwt", { session: false }),
             });
         }
 
-        // Success response
         return res.status(200).json({
             success: true,
             message: "Task updated successfully",
@@ -171,7 +165,6 @@ Router.patch("/archive-tasks", passport.authenticate("jwt", { session: false }),
     const userId = req.user.id;
 
     try {
-        // Archive tasks with status "Done" for the user
         const updatedRowsCount = await taskRepository.archiveTasks(userId);
 
         if (updatedRowsCount === 0) {
@@ -181,7 +174,6 @@ Router.patch("/archive-tasks", passport.authenticate("jwt", { session: false }),
             });
         }
 
-        // Success response
         return res.status(200).json({
             success: true,
             message: `${updatedRowsCount} tasks updated to "Archived".`,
@@ -199,7 +191,6 @@ Router.patch("/archive-tasks", passport.authenticate("jwt", { session: false }),
 Router.delete("/", passport.authenticate("jwt", { session: false }), express.urlencoded({ extended: true }), async (req,res)=>{
     const { taskId } = req.body;
 
-    // Validate the required fields
     if (!taskId) {
         return res.status(400).json({
             success: false,
@@ -208,10 +199,8 @@ Router.delete("/", passport.authenticate("jwt", { session: false }), express.url
     }
 
     try {
-        // New task details to be updated
         const deletedTask = await taskRepository.deleteTask(taskId);
 
-        // Success response
         return res.status(200).json({
             success: true,
             message: "Task deleted successfully",
@@ -226,9 +215,9 @@ Router.delete("/", passport.authenticate("jwt", { session: false }), express.url
 });
 
 Router.delete("/archived", passport.authenticate("jwt", { session: false }), async (req, res) => {
-    const userId = req.user.id; // Correctly extract userId from req.user
+    const userId = req.user.id; 
 
-    console.log("User ID:", userId); // Log userId for debugging
+    console.log("User ID:", userId);
 
     if (!userId) {
         return res.status(400).json({
@@ -238,7 +227,6 @@ Router.delete("/archived", passport.authenticate("jwt", { session: false }), asy
     }
 
     try {
-        // Delete archived tasks for the user
         const deletedRows = await taskRepository.deleteArchivedTasks(userId);
 
         if (deletedRows > 0) {
