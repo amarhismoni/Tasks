@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import "./Task.css";
 
-function Task({ taskId, taskDescription, date, time, status, onEdit, onDelete, onStatusChange }) {
+function Task({
+    taskId,
+    taskDescription,
+    date,
+    time,
+    status,
+    onEdit,
+    onDelete,
+    onStatusChange,
+    saveText, 
+    cancelText, 
+}) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedTask, setEditedTask] = useState({
         editedTaskDescription: taskDescription,
@@ -14,7 +25,13 @@ function Task({ taskId, taskDescription, date, time, status, onEdit, onDelete, o
     };
 
     const handleSave = () => {
-        onEdit(taskId, editedTask.editedTaskDescription, editedTask.editedTaskDate, editedTask.editedTaskTime, status);
+        onEdit(
+            taskId,
+            editedTask.editedTaskDescription,
+            editedTask.editedTaskDate,
+            editedTask.editedTaskTime,
+            status
+        );
         setIsEditing(false);
     };
 
@@ -42,26 +59,51 @@ function Task({ taskId, taskDescription, date, time, status, onEdit, onDelete, o
                     <input
                         type="text"
                         value={editedTask.editedTaskDescription}
-                        onChange={(e) => setEditedTask({ ...editedTask, editedTaskDescription: e.target.value })}
+                        onChange={(e) =>
+                            setEditedTask({
+                                ...editedTask,
+                                editedTaskDescription: e.target.value,
+                            })
+                        }
                         placeholder="Enter task description"
                         className="edit-input-description"
                     />
                     <div className="editing-date-time">
                         <div className="date-time-title">
                             <label htmlFor="date">Date:</label>
-                            <input type="date" value={editedTask.editedTaskDate} onChange={(e) => setEditedTask({ ...editedTask, editedTaskDate: e.target.value })} className="edit-input" />
+                            <input
+                                type="date"
+                                value={editedTask.editedTaskDate}
+                                onChange={(e) =>
+                                    setEditedTask({
+                                        ...editedTask,
+                                        editedTaskDate: e.target.value,
+                                    })
+                                }
+                                className="edit-input"
+                            />
                         </div>
                         <div className="date-time-title">
                             <label htmlFor="time">Time:</label>
-                            <input type="time" value={editedTask.editedTaskTime} onChange={(e) => setEditedTask({ ...editedTask, editedTaskTime: e.target.value })} className="edit-input" />
+                            <input
+                                type="time"
+                                value={editedTask.editedTaskTime}
+                                onChange={(e) =>
+                                    setEditedTask({
+                                        ...editedTask,
+                                        editedTaskTime: e.target.value,
+                                    })
+                                }
+                                className="edit-input"
+                            />
                         </div>
                     </div>
                     <div className="editing-actions">
                         <button className="save-btn" onClick={handleSave}>
-                            Save
+                            {saveText} 
                         </button>
                         <button className="cancel-btn" onClick={handleCancel}>
-                            Cancel
+                            {cancelText}
                         </button>
                     </div>
                 </div>

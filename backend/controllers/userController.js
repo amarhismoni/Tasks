@@ -6,7 +6,6 @@ const bcrypt = require("bcrypt")
 
 const SECRET_KEY = "secret";
 
-// Register Route
 Router.post("/register", express.urlencoded({ extended: true }), async (req, res) => {
 
     const { fullname, username, password, secretAnswer } = req.body;
@@ -17,6 +16,8 @@ Router.post("/register", express.urlencoded({ extended: true }), async (req, res
         const hashedPassword = await bcrypt.hash(password, saltRounds)
         return hashedPassword;
     }
+
+
 
     try {
         const foundUser = await userRepository.findUserByUsername(username);
@@ -29,10 +30,11 @@ Router.post("/register", express.urlencoded({ extended: true }), async (req, res
         }
 
         const hashedPassword = await hashPassword(password);
+        const hashedSecretAnswer = await hashPassword(secretAnswer)
 
         console.log(hashedPassword)
 
-        const user = await userRepository.createUser(fullname, username, hashedPassword, secretAnswer);
+        const user = await userRepository.createUser(fullname, username, hashedPassword, hashedSecretAnswer);
 
         return res.status(201).json({
             success: true,
@@ -48,7 +50,6 @@ Router.post("/register", express.urlencoded({ extended: true }), async (req, res
 });
 
 
-// Login Route
 Router.post("/login", express.urlencoded({ extended: true }), async (req, res) => {
     const { username, password } = req.body;
 

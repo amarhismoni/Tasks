@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Task from "../components/Task";
-import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-import "../App.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Navbar from "../components/Navbar";
+import TaskModal from "../components/TaskModal";
+import ArchivedTasksModal from "../components/ArchivedTasksModal";
 import translations from "../components/translation";
+import "../App.css";
+import Task from '../components/Task'
 
 function Tasks() {
     const [tasks, setTasks] = useState([]);
@@ -16,6 +20,7 @@ function Tasks() {
     const [newTask, setNewTask] = useState({ taskDescription: "", taskDate: "", taskTime: "" });
     const [archivedTasks, setArchivedTasks] = useState([]);
     const [showArchivedModal, setShowArchivedModal] = useState(false);
+    const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString());
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -90,16 +95,25 @@ function Tasks() {
 
     const handleAddTask = async (e) => {
         e.preventDefault();
+
         const token = localStorage.getItem("jwtToken");
         if (!token) {
             setError("No token found. Please log in.");
             navigate("/login");
             return;
         }
+
         if (newTask.taskDescription.length > 100) {
             setError("Task description cannot exceed 100 characters.");
             return;
         }
+
+        const today = new Date().toISOString().split("T")[0];
+        if (newTask.taskDate < today) {
+            setError("Task date cannot be in the past.");
+            return;
+        }
+
 
         const taskData = {
             ...newTask,
@@ -263,12 +277,11 @@ function Tasks() {
             const data = await response.json();
 
             if (data.success) {
-                alert("Task status updated successfully");
+                alert("Tasks archived successfully");
                 await refreshTasks();
             } else {
-                console.error("Failed to update task statuses:", data.message);
+                console.error("Failed to archive tasks:", data.message);
                 setError(data.message);
-                alert(error);
             }
         } catch (err) {
             console.error(err);
@@ -283,7 +296,7 @@ function Tasks() {
             navigate("/login");
             return;
         }
-    
+
         try {
             const response = await fetch("http://localhost:8585/tasks/archived", {
                 method: "GET",
@@ -292,16 +305,16 @@ function Tasks() {
                 },
             });
             const data = await response.json();
-    
+
             if (data.success) {
                 if (data.tasks.length > 0) {
-                    setArchivedTasks(data.tasks); 
-                    setShowArchivedModal(true); 
+                    setArchivedTasks(data.tasks);
+                    setShowArchivedModal(true);
                 } else {
-                    alert("No archived tasks found."); 
+                    alert("No archived tasks found.");
                 }
             } else {
-                console.error("Failed to fetch tasks:", data.message);
+                console.error("Failed to fetch archived tasks:", data.message);
             }
         } catch (err) {
             console.error(err);
@@ -317,34 +330,80 @@ function Tasks() {
             return;
         }
         if (window.confirm("Are you sure you want to delete all archived tasks?")) {
-        try {
-            const response = await fetch("http://localhost:8585/tasks/archived", {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            try {
+                const response = await fetch("http://localhost:8585/tasks/archived", {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (data.success) {
-                alert("Task deleted successfully");
-                await refreshTasks();
-                setShowArchivedModal(false);
-            } else {
-                console.error("Failed to delete task:", data.message);
-                setError(data.message);
+                if (data.success) {
+                    alert("Archived tasks deleted successfully");
+                    await refreshTasks();
+                    setShowArchivedModal(false);
+                } else {
+                    console.error("Failed to delete archived tasks:", data.message);
+                    setError(data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                setError(err.message || "An unexpected error occurred.");
             }
-        } catch (err) {
-            console.error(err);
-            setError(err.message || "An unexpected error occurred.");
         }
-    }
+    };
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date().toLocaleTimeString());
+        }, 1000);
+
+        return () => clearInterval(timer); 
+    }, []);
+
+    useEffect(() => {
+        const checkDueTasks = () => {
+            const now = new Date();
+            const today = now.toISOString().split("T")[0];
+
+            tasks.forEach((task) => {
+                if (task.taskStatus === "Pending" && task.taskDate === today) {
+                    const taskDateTime = new Date(`${task.taskDate}T${task.taskTime}`);
+                    const timeDifference = taskDateTime - now;
+
+                    if (timeDifference > 0 && timeDifference <= 300000) {
+                        showToastNotification(task);
+                    }
+                }
+            });
+        };
+
+        const interval = setInterval(checkDueTasks, 60000); 
+        return () => clearInterval(interval); 
+    }, [tasks]);
+
+    const showToastNotification = (task) => {
+        toast.info(
+            <div>
+                <p>Task Due Soon: {task.taskDescription}</p>
+                <p>Time: {task.taskTime}</p>
+                <button onClick={() => toast.dismiss()}>OK</button>
+            </div>,
+            {
+                autoClose: 5000, 
+                closeButton: false,
+            }
+        );
     };
 
     return (
         <div>
             <Navbar language={language} toggleLanguage={toggleLanguage} fullname={fullname} onArchiveTask={handleArchiveTask} onShowArchivedTasks={handleShowArchivedTasks} />
+            <div className="clock" style={{ visibility: "hidden" }}>
+                <p>Current Time: {currentTime}</p>
+            </div>
             <div className="under-nav">
                 <div className="search-container">
                     <label htmlFor="searchTasks">{translations[language].searchTasks}:</label>
@@ -372,6 +431,8 @@ function Tasks() {
                                         onEdit={handleEditTask}
                                         onStatusChange={handleStatusChange}
                                         onDelete={handleDelete}
+                                        saveText={translations[language].save}
+                                        cancelText={translations[language].cancel}
                                     />
                                 ))}
                             </div>
@@ -382,81 +443,25 @@ function Tasks() {
                 <p className="no-tasks-message">{translations[language].noTasks}</p>
             )}
 
-            {showModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <h2>{translations[language].addNewTask}</h2>
-                        <form onSubmit={handleAddTask} className="modal-form">
-                            <label>
-                                {translations[language].taskDescription}:
-                                <input
-                                    type="text"
-                                    value={newTask.taskDescription}
-                                    onChange={(e) => setNewTask({ ...newTask, taskDescription: e.target.value })}
-                                    placeholder={translations[language].taskDescription}
-                                    className="modal-input"
-                                    maxLength={100}
-                                />
-                            </label>
-                            <p style={{ fontSize: "12px", color: "#666" }}>Characters remaining: {100 - newTask.taskDescription.length}</p>
-                            <label>
-                                {translations[language].date}:
-                                <input type="date" value={newTask.taskDate} onChange={(e) => setNewTask({ ...newTask, taskDate: e.target.value })} className="modal-input" />
-                            </label>
-                            <label>
-                                {translations[language].time}:
-                                <input type="time" value={newTask.taskTime} onChange={(e) => setNewTask({ ...newTask, taskTime: e.target.value })} className="modal-input" />
-                            </label>
-                            <div className="modal-actions">
-                                <button type="submit">{translations[language].save}</button>
-                                <button type="button" onClick={() => setShowModal(false)}>
-                                    {translations[language].cancel}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            <TaskModal
+                showModal={showModal}
+                setShowModal={setShowModal}
+                handleAddTask={handleAddTask}
+                newTask={newTask}
+                setNewTask={setNewTask}
+                language={language}
+            />
 
-            {showArchivedModal && (
-                <div className="modal">
-                    <div className="archive-modal-content">
-                        <h2>{translations[language].archivedTasks}</h2>
-                        <div className="archive-modal-body">
-                            {Object.keys(groupTasksByDateDesc(archivedTasks)).length > 0 ? (
-                                Object.entries(groupTasksByDateDesc(archivedTasks)).map(([date, tasks]) => (
-                                    <div key={date} className="archived-task-group">
-                                        <h4>{date}</h4>
-                                        {tasks.map((task) => (
-                                            <div key={task.taskId} className="task archive-task smaller-text">
-                                                <p className="archive-task-description">{task.taskDescription}</p>
-                                                <div className="archive-right">
-                                                    <p>
-                                                        {translations[language].dueTime}: {task.taskTime}
-                                                    </p>
-                                                    <p>
-                                                        {translations[language].status}: {task.taskStatus}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ))
-                            ) : (
-                                <p>{translations[language].noArchivedTasks}</p>
-                            )}
-                        </div>
-                        <div className="archive-modal-actions">
-                            <button onClick={handleDeleteArchives} className="archive-close">
-                                {translations[language].deleteArchives}
-                            </button>
-                            <button onClick={() => setShowArchivedModal(false)} className="archive-close">
-                                {translations[language].close}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <ArchivedTasksModal
+                showArchivedModal={showArchivedModal}
+                setShowArchivedModal={setShowArchivedModal}
+                archivedTasks={archivedTasks}
+                handleDeleteArchives={handleDeleteArchives}
+                language={language}
+                groupTasksByDateDesc={groupTasksByDateDesc}
+            />
+
+            <ToastContainer position="bottom-right" autoClose={5000} hideProgressBar={true} />
         </div>
     );
 }

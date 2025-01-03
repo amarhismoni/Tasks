@@ -3,7 +3,6 @@ const express = require("express");
 const taskRepository = require("../repositories/taskRepository");
 const passport = require("passport");
 
-// Middleware to parse JSON and URL-encoded data
 Router.use(express.json());
 Router.use(express.urlencoded({ extended: true }));
 
@@ -62,7 +61,6 @@ Router.get("/archived", passport.authenticate("jwt", { session: false }), async 
 });
 
 
-// Add a new task
 Router.post(
     "/",
     passport.authenticate("jwt", { session: false }),

@@ -293,3 +293,88 @@ button {
 .reset-modal-actions button{
     width: 45%;
 }
+
+.Toastify__toast {
+    background-color: #4caf50; 
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 10px; 
+}
+
+.Toastify__toast--error {
+    background-color: #f44336; 
+}
+
+.Toastify__toast--success {
+    background-color: #4caf50; 
+}
+
+.Toastify__toast--warning {
+    background-color: #ff9800; 
+}
+
+.Toastify__toast--info {
+    background-color: #2196f3; 
+}
+
+.Toastify__toast-body {
+    font-size: 14px; 
+    padding: 10px; 
+}
+
+.Toastify__close-button {
+    color: white; 
+}
+
+/* Password Toggle Button */
+.password-toggle-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666; /* Gray color for the icon */
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.password-toggle-button:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Light gray background on hover */
+}
+
+.password-toggle-button:focus {
+    outline: none; 
+}
+
+.password-toggle-button svg {
+    width: 20px;
+    height: 20px;
+    fill: #666; /* Gray color for the icon */
+}
+
+.password-toggle-button:hover svg {
+    fill: #333; /* Darker gray on hover */
+}
+
+.password-toggle-button-reset{
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-20%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666; /* Gray color for the icon */
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}

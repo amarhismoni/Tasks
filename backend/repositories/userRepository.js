@@ -63,7 +63,10 @@ exports.verifySecretAnswer = async (username, secretAnswer) => {
             throw new Error("User not found.");
         }
 
-        if (user.resetToken === secretAnswer) {
+
+        const comparedSecretAnswer = await bcrypt.compare(secretAnswer, user.resetToken)
+
+        if (comparedSecretAnswer) {
             return user; 
         } else {
             throw new Error("Invalid secret answer.");

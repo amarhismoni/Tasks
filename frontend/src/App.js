@@ -11,6 +11,7 @@ function App() {
                 <Routes>
                     <Route path="/home" element={<Tasks />} />
                     <Route path="/register" exact element={<Register />} />
+                    <Route path="/" exact element={<Register />} />
                     <Route path="/login" element={<Login />} />
                 </Routes>
             </BrowserRouter>
