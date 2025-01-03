@@ -19,7 +19,7 @@ exports.findUserByUsername = async (username) => {
                 username: username,
             },
         });
-        return user || null; 
+        return user || null;
     } catch (error) {
         console.error("Error finding user by username:", error);
         throw error;
@@ -63,11 +63,10 @@ exports.verifySecretAnswer = async (username, secretAnswer) => {
             throw new Error("User not found.");
         }
 
-
-        const comparedSecretAnswer = await bcrypt.compare(secretAnswer, user.resetToken)
+        const comparedSecretAnswer = await bcrypt.compare(secretAnswer, user.resetToken);
 
         if (comparedSecretAnswer) {
-            return user; 
+            return user;
         } else {
             throw new Error("Invalid secret answer.");
         }
